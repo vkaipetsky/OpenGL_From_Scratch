@@ -185,9 +185,11 @@
 				TargetAttributes = {
 					F5C702681A80435C00E4120D = {
 						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = NKPU5JX8N9;
 					};
 					F5C702811A80435D00E4120D = {
 						CreatedOnToolsVersion = 6.1.1;
+						DevelopmentTeam = NKPU5JX8N9;
 						TestTargetID = F5C702681A80435C00E4120D;
 					};
 				};
@@ -383,6 +385,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -394,6 +398,7 @@
 				INFOPLIST_FILE = OpenGL_From_ScratchTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OpenGL_From_Scratch.app/OpenGL_From_Scratch";
 			};
 			name = Debug;
@@ -402,6 +407,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -409,6 +416,7 @@
 				INFOPLIST_FILE = OpenGL_From_ScratchTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/OpenGL_From_Scratch.app/OpenGL_From_Scratch";
 			};
 			name = Release;

@@ -110,8 +110,8 @@ const GLubyte Indices[] = {
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
-    glClearColor(m_curRed, 1.0, 1.0, 1.0);
-//    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(0.3f*m_curRed, 0.3f*1.0f, 0.3f*1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
     
 //    GLfloat aspect = fabsf(view.drawableWidth / view.drawableHeight);
     
@@ -192,6 +192,120 @@ const GLubyte Indices[] = {
 //    glBegin(GL_LINES);
 //    glVertex3f();
 //    glEnd();
+
+    {
+        // Move back to identity
+        self.effect.transform.modelviewMatrix = GLKMatrix4Identity;
+
+        // Let's color the line
+        self.effect.useConstantColor = GL_TRUE;
+        
+        // Apparently not enough to do the above! Must also do this:
+        glDisableVertexAttribArray(GLKVertexAttribColor);
+        
+        // Make the line a cyan color
+        self.effect.constantColor = GLKVector4Make(0.0f, // Red
+                                                   1.0f, // Green
+                                                   1.0f, // Blue
+                                                   1.0f);// Alpha
+        
+        [self.effect prepareToDraw];
+        
+        NSUInteger screenH = view.drawableHeight;
+        NSUInteger screenW = view.drawableWidth;
+        
+        const GLfloat line[] =
+        {
+            1.0f, 1.0f, //point A
+            1.0f, screenH-2, //point B
+            
+            1.0f, 1.0f,
+            screenW-2, 1.0f,
+            
+            screenW-2, 1.0f, //point A
+            screenW-2, screenH-2, //point B
+            
+            1.0f, screenH-2,
+            screenW-2, screenH-2,
+        };
+        
+        // Create an handle for a buffer object array
+        GLuint bufferObjectNameArray;
+        
+        // Have OpenGL generate a buffer name and store it in the buffer object array
+        glGenBuffers(1, &bufferObjectNameArray);
+        
+        // Bind the buffer object array to the GL_ARRAY_BUFFER target buffer
+        glBindBuffer(GL_ARRAY_BUFFER, bufferObjectNameArray);
+        
+        // Send the line data over to the target buffer in GPU RAM
+        glBufferData(GL_ARRAY_BUFFER,   // the target buffer
+                     sizeof(line),      // the number of bytes to put into the buffer
+                     line,              // a pointer to the data being copied
+                     GL_STATIC_DRAW);   // the usage pattern of the data
+        
+        // Enable vertex data to be fed down the graphics pipeline to be drawn
+        glEnableVertexAttribArray(GLKVertexAttribPosition);
+        
+        // Specify how the GPU looks up the data
+        glVertexAttribPointer(GLKVertexAttribPosition, // the currently bound buffer holds the data
+                              2,                       // number of coordinates per vertex
+                              GL_FLOAT,                // the data type of each component
+                              GL_FALSE,                // can the data be scaled
+                              2*4,                     // how many bytes per vertex (2 floats per vertex)
+                              NULL);                   // offset to the first coordinate, in this case 0 
+        
+        glDrawArrays(GL_LINES, 0, 8); // render
+        
+        // Now try drawing the touched path
+        NSUInteger numLocs = clickLocations.count;
+ 
+        if (numLocs)
+        {
+            NSUInteger memorySize = sizeof(GLfloat) * 2 * ( numLocs * 2 - 1 );
+            GLfloat *linesMemory = malloc( memorySize );
+            
+            int curLocInMemory = 0;
+            for (ClickLocation *curLoc in clickLocations)
+            {
+                linesMemory[ curLocInMemory ] = 2*curLoc->loc.x;
+                linesMemory[ curLocInMemory + 1 ] = view.drawableHeight - 2*curLoc->loc.y;
+                
+                curLocInMemory += 2;
+            }
+
+            // Create an handle for a buffer object array
+            GLuint bufferObjectNameArray;
+            
+            // Have OpenGL generate a buffer name and store it in the buffer object array
+            glGenBuffers(1, &bufferObjectNameArray);
+            
+            // Bind the buffer object array to the GL_ARRAY_BUFFER target buffer
+            glBindBuffer(GL_ARRAY_BUFFER, bufferObjectNameArray);
+            
+            // Send the line data over to the target buffer in GPU RAM
+            glBufferData(GL_ARRAY_BUFFER,   // the target buffer
+                         sizeof(GLfloat) * 2 * numLocs,      // the number of bytes to put into the buffer
+                         linesMemory,              // a pointer to the data being copied
+                         GL_DYNAMIC_DRAW);   // the usage pattern of the data
+            
+            // Enable vertex data to be fed down the graphics pipeline to be drawn
+            glEnableVertexAttribArray(GLKVertexAttribPosition);
+            
+            // Specify how the GPU looks up the data
+            glVertexAttribPointer(GLKVertexAttribPosition, // the currently bound buffer holds the data
+                                  2,                       // number of coordinates per vertex
+                                  GL_FLOAT,                // the data type of each component
+                                  GL_FALSE,                // can the data be scaled
+                                  2*4,                     // how many bytes per vertex (2 floats per vertex)
+                                  NULL);                   // offset to the first coordinate, in this case 0
+            
+            glDrawArrays(GL_LINE_STRIP, 0, curLocInMemory/2); // render
+            
+            free( linesMemory );
+        }
+        
+    }
 }
 
 //- (void)render:(CADisplayLink*)displayLink {
