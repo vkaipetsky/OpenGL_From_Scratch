@@ -53,6 +53,22 @@
 
 
 
+@interface TouchSequenceForASingleFinger : NSObject
+{
+@public
+    UITouch* touch;
+    NSMutableArray* locations;
+}
+
+@end
+
+@implementation TouchSequenceForASingleFinger
+
+
+@end
+
+
+
 @interface AppDelegate ()
 
 @end
@@ -93,10 +109,10 @@ typedef struct {
 } Vertex;
 
 const Vertex Vertices[] = {
-    {{ 5, -5, 0}, {1, 0, 0, 1}},
-    {{ 5,  5, 0}, {0, 1, 0, 1}},
-    {{-5,  5, 0}, {0, 0, 1, 1}},
-    {{-5, -5, 0}, {0, 0, 0, 1}}
+    {{ 25, -25, 0}, {1, 0, 0, 1}},
+    {{ 25,  25, 0}, {0, 1, 0, 1}},
+    {{-25,  25, 0}, {0, 0, 1, 1}},
+    {{-25, -25, 0}, {0, 0, 0, 1}}
 };
 
 const GLubyte Indices[] = {
@@ -104,9 +120,9 @@ const GLubyte Indices[] = {
     2, 3, 0
 };
 
-//CGPoint locations[1000];
+CGPoint locations[1000];
 //CGPoint* locations = 0;
-//int numLocations;
+int numLocations = 0;
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
@@ -142,46 +158,18 @@ const GLubyte Indices[] = {
     glVertexAttribPointer(GLKVertexAttribColor, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const GLvoid *) offsetof(Vertex, Color));
     
     glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
-/*
-    for ( int i = 0;  i < 5;  i++ )
-    {
-        GLKMatrix4 modelMatrix = GLKMatrix4MakeTranslation(i*30, 200, 0);
-        self.effect.transform.modelviewMatrix = modelMatrix;
-        
-        [self.effect prepareToDraw];
-        
-        glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
-    }
-*/
-    
-    /*
-    for ( int i = 0;  i < numLocations;  i++ )
-    {
-        GLKMatrix4 modelMatrix = GLKMatrix4MakeTranslation(2*locations[i].x, view.drawableHeight - 2*locations[i].y, 0);
-        self.effect.transform.modelviewMatrix = modelMatrix;
-        
-        [self.effect prepareToDraw];
-        
-        glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
-    }
-    */
-    
-    /*
-//    for ( CGPoint *curLoc in locationsDyn )
-    for ( int i = 0;  i < numLocations;  i++ )
-    {
-        CGPoint* curLoc = (__bridge CGPoint *)(locationsDyn[i]);
-        GLKMatrix4 modelMatrix = GLKMatrix4MakeTranslation(2*curLoc->x, view.drawableHeight - 2*curLoc->y, 0);
-        self.effect.transform.modelviewMatrix = modelMatrix;
-        
-        [self.effect prepareToDraw];
-        
-        glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
-    }
-    */
     
     for (ClickLocation *curLoc in clickLocations) {
         GLKMatrix4 modelMatrix = GLKMatrix4MakeTranslation(2*curLoc->loc.x, view.drawableHeight - 2*curLoc->loc.y, 0);
+        self.effect.transform.modelviewMatrix = modelMatrix;
+        
+        [self.effect prepareToDraw];
+        
+        glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
+    }
+    
+    for (int i = 0;  i < numLocations; i++) {
+        GLKMatrix4 modelMatrix = GLKMatrix4MakeTranslation(2*locations[i].x, view.drawableHeight - 2*locations[i].y, 0);
         self.effect.transform.modelviewMatrix = modelMatrix;
         
         [self.effect prepareToDraw];
@@ -257,6 +245,113 @@ const GLubyte Indices[] = {
         
         glDrawArrays(GL_LINES, 0, 8); // render
         
+if(1)
+{
+    if (1)
+    {
+        NSUInteger memorySize = sizeof(GLfloat) * 2 * ( (numLocations+1) * 2 - 1 );
+        GLfloat *linesMemory = malloc( memorySize );
+        
+        int curLocInMemory = 0;
+        for (int i = 0;  i < numLocations;  i++)
+        {
+            linesMemory[ curLocInMemory ] = 2*locations[i].x;
+            linesMemory[ curLocInMemory + 1 ] = view.drawableHeight - 2*locations[i].y;
+            
+            curLocInMemory += 2;
+        }
+
+        // Close the contour
+        linesMemory[ curLocInMemory ] = 2*locations[0].x;
+        linesMemory[ curLocInMemory + 1 ] = view.drawableHeight - 2*locations[0].y;
+        curLocInMemory += 2;
+        
+        // Create an handle for a buffer object array
+        GLuint bufferObjectNameArray;
+        
+        // Have OpenGL generate a buffer name and store it in the buffer object array
+        glGenBuffers(1, &bufferObjectNameArray);
+        
+        // Bind the buffer object array to the GL_ARRAY_BUFFER target buffer
+        glBindBuffer(GL_ARRAY_BUFFER, bufferObjectNameArray);
+        
+        // Send the line data over to the target buffer in GPU RAM
+        glBufferData(GL_ARRAY_BUFFER,   // the target buffer
+                     sizeof(GLfloat) * 2 * (numLocations+1),      // the number of bytes to put into the buffer
+                     linesMemory,              // a pointer to the data being copied
+                     GL_DYNAMIC_DRAW);   // the usage pattern of the data
+        
+        // Enable vertex data to be fed down the graphics pipeline to be drawn
+        glEnableVertexAttribArray(GLKVertexAttribPosition);
+        
+        // Specify how the GPU looks up the data
+        glVertexAttribPointer(GLKVertexAttribPosition, // the currently bound buffer holds the data
+                              2,                       // number of coordinates per vertex
+                              GL_FLOAT,                // the data type of each component
+                              GL_FALSE,                // can the data be scaled
+                              2*4,                     // how many bytes per vertex (2 floats per vertex)
+                              NULL);                   // offset to the first coordinate, in this case 0
+        
+        glDrawArrays(GL_LINE_STRIP, 0, curLocInMemory/2); // render
+        
+        free( linesMemory );
+    }
+    else
+    {
+    for (TouchSequenceForASingleFinger *curTrackedTouchSeq in trackedTouches)
+    {
+        NSUInteger numLocs = curTrackedTouchSeq->locations.count;
+        
+        if (numLocs)
+        {
+            NSUInteger memorySize = sizeof(GLfloat) * 2 * ( numLocs * 2 - 1 );
+            GLfloat *linesMemory = malloc( memorySize );
+            
+            int curLocInMemory = 0;
+            for (ClickLocation *curLoc in curTrackedTouchSeq->locations)
+            {
+                linesMemory[ curLocInMemory ] = 2*curLoc->loc.x;
+                linesMemory[ curLocInMemory + 1 ] = view.drawableHeight - 2*curLoc->loc.y;
+                
+                curLocInMemory += 2;
+            }
+            
+            // Create an handle for a buffer object array
+            GLuint bufferObjectNameArray;
+            
+            // Have OpenGL generate a buffer name and store it in the buffer object array
+            glGenBuffers(1, &bufferObjectNameArray);
+            
+            // Bind the buffer object array to the GL_ARRAY_BUFFER target buffer
+            glBindBuffer(GL_ARRAY_BUFFER, bufferObjectNameArray);
+            
+            // Send the line data over to the target buffer in GPU RAM
+            glBufferData(GL_ARRAY_BUFFER,   // the target buffer
+                         sizeof(GLfloat) * 2 * numLocs,      // the number of bytes to put into the buffer
+                         linesMemory,              // a pointer to the data being copied
+                         GL_DYNAMIC_DRAW);   // the usage pattern of the data
+            
+            // Enable vertex data to be fed down the graphics pipeline to be drawn
+            glEnableVertexAttribArray(GLKVertexAttribPosition);
+            
+            // Specify how the GPU looks up the data
+            glVertexAttribPointer(GLKVertexAttribPosition, // the currently bound buffer holds the data
+                                  2,                       // number of coordinates per vertex
+                                  GL_FLOAT,                // the data type of each component
+                                  GL_FALSE,                // can the data be scaled
+                                  2*4,                     // how many bytes per vertex (2 floats per vertex)
+                                  NULL);                   // offset to the first coordinate, in this case 0
+            
+            glDrawArrays(GL_LINE_STRIP, 0, curLocInMemory/2); // render
+            
+            free( linesMemory );
+        }
+    }
+    }
+    
+}
+else
+{
         // Now try drawing the touched path
         NSUInteger numLocs = clickLocations.count;
  
@@ -304,7 +399,7 @@ const GLubyte Indices[] = {
             
             free( linesMemory );
         }
-        
+}
     }
 }
 
@@ -317,7 +412,7 @@ GLuint _vertexBuffer;
 GLuint _indexBuffer;
 NSMutableArray *locationsDyn;
 NSMutableArray *clickLocations;
-
+NSMutableArray* trackedTouches;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
@@ -373,13 +468,16 @@ NSMutableArray *clickLocations;
     */
     clickLocations = [[NSMutableArray alloc] init];
     
+    trackedTouches = [[NSMutableArray alloc] init];
+    
     return YES;
 }
 
 
 -(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
 {
-    NSSet *allTouches = [event allTouches];
+    /*
+     NSSet *allTouches = [event allTouches];
     for (UITouch *touch in allTouches)
     {
         CGPoint location = [touch locationInView:touch.view];
@@ -389,10 +487,46 @@ NSMutableArray *clickLocations;
         locDyn->loc = location;
         [clickLocations addObject:locDyn];
     }
+     */
 }
 
 -(void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event
 {
+    NSSet *allTouches = [event allTouches];
+    
+    numLocations = 0;
+    
+    for (UITouch *touch in allTouches)
+    {
+        TouchSequenceForASingleFinger *foundTrackedTouchSeq = 0;
+        
+        for (TouchSequenceForASingleFinger *curTrackedTouchSeq in trackedTouches)
+        {
+            if (touch == curTrackedTouchSeq->touch)
+            {
+                foundTrackedTouchSeq = curTrackedTouchSeq;
+                break;
+            }
+        }
+        
+        if ( foundTrackedTouchSeq == 0 )
+        {
+            TouchSequenceForASingleFinger* newTrackedTouch = [[TouchSequenceForASingleFinger alloc] init];
+            newTrackedTouch->touch = touch;
+            [trackedTouches addObject:newTrackedTouch];
+            foundTrackedTouchSeq = newTrackedTouch;
+        }
+        
+        CGPoint location = [touch locationInView:touch.view];
+        
+        locations[numLocations++] = location;
+        
+        ClickLocation* locDyn = [[ClickLocation alloc] init];
+        locDyn->loc = location;
+        
+        [foundTrackedTouchSeq->locations addObject:locDyn];
+    }
+    /*
     UITouch *touch = [[event allTouches] anyObject];
     CGPoint location = [touch locationInView:touch.view];
 //    locations[numLocations++] = location;
@@ -400,6 +534,7 @@ NSMutableArray *clickLocations;
     ClickLocation* locDyn = [[ClickLocation alloc] init];
     locDyn->loc = location;
     [clickLocations addObject:locDyn];
+    */
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event
