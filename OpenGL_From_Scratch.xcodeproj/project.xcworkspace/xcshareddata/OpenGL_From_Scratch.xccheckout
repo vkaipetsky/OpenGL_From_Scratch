@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>D308F99D-3B82-400F-8A15-ADB9E73B6FF4</string>
+	<key>IDESourceControlProjectName</key>
+	<string>OpenGL_From_Scratch</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>9A76FC8EE1204788BF23B8C1FE152CF9B029E57E</key>
+		<string>https://github.com/vkaipetsky/OpenGL_From_Scratch.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>OpenGL_From_Scratch.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>9A76FC8EE1204788BF23B8C1FE152CF9B029E57E</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/vkaipetsky/OpenGL_From_Scratch.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>9A76FC8EE1204788BF23B8C1FE152CF9B029E57E</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>9A76FC8EE1204788BF23B8C1FE152CF9B029E57E</string>
+			<key>IDESourceControlWCCName</key>
+			<string>OpenGL_From_Scratch</string>
+		</dict>
+	</array>
+</dict>
+</plist>
