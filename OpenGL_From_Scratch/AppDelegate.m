@@ -14,6 +14,9 @@
 
 #import <Foundation/NSArray.h>
 
+//#include "C++Try1.h"
+#import "C++Wrapper.h"
+
 
 
 @interface Person : NSObject
@@ -103,6 +106,8 @@
     }
 }
 
+
+
 typedef struct {
     float Position[3];
     float Color[4];
@@ -176,6 +181,9 @@ int numLocations = 0;
         
         glDrawElements(GL_TRIANGLES, sizeof(Indices)/sizeof(Indices[0]), GL_UNSIGNED_BYTE, 0);
     }
+    
+    CPP_Wrapper *wooper = [[CPP_Wrapper alloc] init];
+    [wooper woop];
     
 //    glBegin(GL_LINES);
 //    glVertex3f();

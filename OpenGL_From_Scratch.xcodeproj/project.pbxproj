@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F596B0E41BA166430039260F /* C++Try1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = F596B0E21BA166430039260F /* C++Try1.cpp */; };
+		F596B0E61BA172A80039260F /* C++Wrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = F596B0E51BA172A80039260F /* C++Wrapper.mm */; };
 		F5C7026F1A80435C00E4120D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F5C7026E1A80435C00E4120D /* main.m */; };
 		F5C702721A80435C00E4120D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F5C702711A80435C00E4120D /* AppDelegate.m */; };
 		F5C702751A80435C00E4120D /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F5C702741A80435C00E4120D /* ViewController.m */; };
@@ -31,6 +33,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F596B0E21BA166430039260F /* C++Try1.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "C++Try1.cpp"; sourceTree = "<group>"; };
+		F596B0E31BA166430039260F /* C++Try1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "C++Try1.h"; sourceTree = "<group>"; };
+		F596B0E51BA172A80039260F /* C++Wrapper.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = "C++Wrapper.mm"; sourceTree = "<group>"; };
+		F596B0E71BA174010039260F /* C++Wrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "C++Wrapper.h"; sourceTree = "<group>"; };
 		F5C702691A80435C00E4120D /* OpenGL_From_Scratch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OpenGL_From_Scratch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5C7026D1A80435C00E4120D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F5C7026E1A80435C00E4120D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -102,6 +108,10 @@
 				F5C702971A8045F300E4120D /* OpenGLView.m */,
 				F5C702731A80435C00E4120D /* ViewController.h */,
 				F5C702741A80435C00E4120D /* ViewController.m */,
+				F596B0E71BA174010039260F /* C++Wrapper.h */,
+				F596B0E51BA172A80039260F /* C++Wrapper.mm */,
+				F596B0E31BA166430039260F /* C++Try1.h */,
+				F596B0E21BA166430039260F /* C++Try1.cpp */,
 				F5C7026E1A80435C00E4120D /* main.m */,
 				F5C702761A80435C00E4120D /* Main.storyboard */,
 				F5C702791A80435C00E4120D /* Images.xcassets */,
@@ -239,8 +249,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5C702751A80435C00E4120D /* ViewController.m in Sources */,
+				F596B0E61BA172A80039260F /* C++Wrapper.mm in Sources */,
 				F5C702721A80435C00E4120D /* AppDelegate.m in Sources */,
 				F5C7026F1A80435C00E4120D /* main.m in Sources */,
+				F596B0E41BA166430039260F /* C++Try1.cpp in Sources */,
 				F5C702981A8045F300E4120D /* OpenGLView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
